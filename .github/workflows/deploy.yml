@@ -1,0 +1,40 @@
+name: Test & Deploy Worker
+
+# Push-to-deploy for the daily.dev MCP connector.
+# Repo secrets required: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID.
+# Worker runtime secrets (DAILY_DEV_TOKEN, MCP_AUTH_KEY, GITHUB_TOKEN) live in Cloudflare and survive deploys.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Health check
+        run: |
+          sleep 5
+          curl -sf "https://daily-dev-mcp.${{ vars.WORKERS_SUBDOMAIN }}.workers.dev/" || echo "health check skipped (set repo variable WORKERS_SUBDOMAIN to enable)"
