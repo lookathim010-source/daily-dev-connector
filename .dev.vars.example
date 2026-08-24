@@ -1,0 +1,4 @@
+# Local development only (wrangler dev). Never commit. Production secrets go in: npx wrangler secret put <NAME>
+DAILY_DEV_TOKEN=dda_your_daily_dev_plus_token
+MCP_AUTH_KEY=replace-with-32-plus-random-characters
+# DAILY_DEV_API_BASE=http://127.0.0.1:PORT/public/v1   # point at test/mock-api.mjs for offline runs
