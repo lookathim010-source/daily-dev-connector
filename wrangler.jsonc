@@ -1,0 +1,23 @@
+{
+  // daily.dev MCP connector + agent memory — Cloudflare Worker
+  // One-shot deploy from any machine or cloud shell:  ./deploy.sh   (see README → Deploy)
+  // Secrets (never here): DAILY_DEV_TOKEN, MCP_AUTH_KEY, GITHUB_TOKEN  → `wrangler secret put <NAME>`
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dailydevplugd",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "observability": { "enabled": true, "head_sampling_rate": 1 },
+  "kv_namespaces": [
+    // AGENT_KV holds the agent's run state (seen-post watermark, counters, last brief). deploy.sh fills the id.
+    { "binding": "AGENT_KV", "id": "e600b81aa0da41d694ddb51d2ccd6380" }
+  ],
+  "vars": {
+    // non-secret settings
+    "RATE_LIMIT_PER_MIN": "120",
+    "GITHUB_REPO": "lookathim010-source/agent-knowledge",   // the readable knowledge repo (deploy.sh fills it)
+    "GITHUB_BRANCH": "main",
+    "KNOWLEDGE_NAME": "T agent"
+  }
+}
