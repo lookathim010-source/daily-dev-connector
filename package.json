@@ -15,8 +15,8 @@
     "zod": "^4.0.0"
   },
   "devDependencies": {
-    "@modelcontextprotocol/client": "^2.0.0",
-    "wrangler": "^4.0.0"
+    "@modelcontextprotocol/client": "^2.2.0",
+    "wrangler": "^4.148.0"
   },
   "engines": { "node": ">=20" }
 }
